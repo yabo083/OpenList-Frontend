@@ -62,6 +62,7 @@ const Preview = () => {
     return audio
   }
   onMount(() => {
+    const audioList = audios.map(objToAudio)
     ap = new APlayer({
       container: document.querySelector("#audio-player"),
       mini: false,
@@ -74,8 +75,26 @@ const Preview = () => {
       mutex: true,
       listFolded: false,
       lrcType: objStore.provider === "NeteaseMusic" ? 1 : 3,
-      audio: audios.map(objToAudio),
+      audio: audioList,
     })
+
+    // Function to update cover class based on current audio
+    const updateCoverClass = () => {
+      const playerContainer = document.querySelector("#audio-player")
+      if (!playerContainer) return
+
+      const currentAudio = audioList[ap.list.index]
+      const hasCover = currentAudio && currentAudio.cover
+
+      playerContainer.classList.remove("ap-has-cover", "ap-no-cover")
+      playerContainer.classList.add(hasCover ? "ap-has-cover" : "ap-no-cover")
+    }
+
+    // Update cover class on song switch
+    ap.events.on("listswitch", updateCoverClass)
+
+    // Initial cover class
+    updateCoverClass()
 
     // Apply monkey patch to fix https://github.com/DIYgod/APlayer/issues/283
     const _switch = ap.lrc.switch
