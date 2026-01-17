@@ -18,7 +18,11 @@ export const Nav = () => {
       return ["", ...pathname().split("/").filter(Boolean)]
     } else {
       const p = pathname().split("/").filter(Boolean)
-      return [`@s/${p[1] ?? ""}`, ...p.slice(2)]
+      // Only include @s/shareId if shareId exists, otherwise return empty path
+      if (p.length < 2 || !p[1]) {
+        return [""]
+      }
+      return [`@s/${p[1]}`, ...p.slice(2)]
     }
   })
   const t = useT()
