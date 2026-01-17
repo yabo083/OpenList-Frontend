@@ -42,10 +42,15 @@ const Preview = () => {
         getSetting("audio_cover") ||
         "https://res.oplist.org/logo/logo.svg"
     }
+    // Use objStore.raw_url for the current audio if it's the main object being previewed
+    // Otherwise, generate the URL using rawLink
+    const audioUrl = obj === objStore.obj && objStore.raw_url 
+      ? objStore.raw_url 
+      : rawLink(obj, true)
     const audio = {
       name: obj.name,
       artist: "Unknown",
-      url: rawLink(obj, true),
+      url: audioUrl,
       cover: cover,
       lrc: lrc,
     }
